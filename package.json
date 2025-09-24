@@ -1,0 +1,32 @@
+{
+  "name": "blog-system-backend",
+  "version": "1.0.0",
+  "description": "Backend for blog system with user and admin roles",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node seeders/userSeeder.js",
+    "test": "node tests/authTest.js",
+    "setup-test": "node setup-and-test.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.787.0",
+    "@aws-sdk/s3-request-presigner": "^3.787.0",
+    "axios": "^1.8.4",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "multer": "^1.4.5-lts.2",
+    "react-quill": "^2.0.0",
+    "slugify": "^1.6.6",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
