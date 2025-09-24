@@ -6,9 +6,8 @@ exports.generateBlog = async (req, res) => {
   try {
     const title = req.body.title;
     const blog=await bloggen(title)
-    console.log("from api",blog)
     res.json({
-        blog:blog
+        blog
     })
     
   } catch (error) {
