@@ -3,6 +3,6 @@ const { generateBlog } = require('../controllers/bloggenerator');
 const { protect } = require('../middleware/auth');
 const router = express.Router();
 
-router.get('/',generateBlog);
+router.post('/',generateBlog);
 
 module.exports=router
