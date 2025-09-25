@@ -60,10 +60,11 @@ app.use('/api/blogs', require('./routes/blogs'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/generate', require('./routes/generateblog'));
+app.use('/api/automation',require('./routes/automation'));
 
 // Home route
 app.use('/', (req, res) => {
-  res.json({ message: 'API is running...' });
+  res.json({ message: 'API is running...' })
 });
 
 // Test cookies route
