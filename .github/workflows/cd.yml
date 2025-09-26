@@ -34,6 +34,6 @@ jobs:
             sudo docker stop techdrop || true
             sudo docker rm techdrop || true
             sudo docker run -d --name techdrop \
-            --env-file /home/${{ secrets.SSH_USERNAME }}/.env \
+            --env-file /home/sidks/.env \
             -p 8000:8000 \
             sidharthkshubham/techdrop:latest
