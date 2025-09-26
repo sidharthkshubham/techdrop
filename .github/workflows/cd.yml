@@ -21,16 +21,16 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
-          tags: sidharthkshubham/techdrop:${{ github.sha }}
+          tags: sidharthkshubham/techdrop:latest
 
-      # - name: deploy via ssh
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USERNAME }}
-      #     key: ${{ secrets.SSH_KEY }}
-      #     script: |
-      #       cd /home/techdrop/techdrop
-      #       git pull
-      #       docker-compose down -v
-      #       docker-compose up -d
+      - name: deploy via ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            sudo docker pull sidharthkshubham/techdrop:latest
+            sudo docker stop techdrop
+            sudo docker rm techdrop
+            
