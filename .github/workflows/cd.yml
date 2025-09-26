@@ -31,6 +31,6 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
             sudo docker pull sidharthkshubham/techdrop:latest
-            sudo docker stop techdrop
-            sudo docker rm techdrop
+            sudo docker stop techdrop || true
+            sudo docker rm techdrop || true
             
