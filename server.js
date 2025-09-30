@@ -64,7 +64,7 @@ app.use('/api/automation',require('./routes/automation'));
 
 // Home route
 app.use('/', (req, res) => {
-  res.json({ message: 'API is running...' })
+  res.json({ message: 'API is running...  .......' })
 });
 
 // Test cookies route
