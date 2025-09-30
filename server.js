@@ -76,7 +76,14 @@ app.get('/api/test-cookie', (req, res) => {
   });
   res.json({ message: 'Cookie set for testing' });
 });
-
+app.get('/api/env-check', (req, res) => {
+  res.json({
+    endpoint: !!process.env.AZURE_OPENAI_ENDPOINT,
+    apiKey: !!process.env.AZURE_OPENAI_API_KEY,
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION,
+    deployment: process.env.AZURE_OPENAI_DEPLOYMENT
+  });
+});
 // Test CORS and cookies route
 app.get('/api/test-cors', (req, res) => {
   console.log('CORS test request received');
