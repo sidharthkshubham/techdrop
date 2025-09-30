@@ -79,7 +79,7 @@ const BlogSchema = new mongoose.Schema({
   seo: {
     metaTitle: {
       type: String,
-      maxlength: [60, 'Meta title cannot be more than 60 characters']
+      maxlength: [100, 'Meta title cannot be more than 60 characters']
     },
     metaDescription: {
       type: String,
