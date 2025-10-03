@@ -7,14 +7,23 @@ router.post('/', generateBlog);
 
 // Enhanced environment check
 router.get('/getenv', (req, res) => {
+  // Clean environment variables by removing extra quotes
+  const cleanEndpoint = process.env.AZURE_OPENAI_ENDPOINT?.replace(/^["']|["']$/g, '');
+  const cleanApiKey = process.env.AZURE_OPENAI_API_KEY?.replace(/^["']|["']$/g, '');
+  const cleanApiVersion = process.env.AZURE_OPENAI_API_VERSION?.replace(/^["']|["']$/g, '');
+  const cleanDeployment = process.env.AZURE_OPENAI_DEPLOYMENT?.replace(/^["']|["']$/g, '');
+  
   const config = {
-    endpoint: !!process.env.AZURE_OPENAI_ENDPOINT,
-    apiKey: !!process.env.AZURE_OPENAI_API_KEY,
-    apiVersion: !!process.env.AZURE_OPENAI_API_VERSION,
-    deployment: !!process.env.AZURE_OPENAI_DEPLOYMENT,
-    endpointValue: process.env.AZURE_OPENAI_ENDPOINT,
-    apiVersionValue: process.env.AZURE_OPENAI_API_VERSION,
-    deploymentValue: process.env.AZURE_OPENAI_DEPLOYMENT
+    endpoint: !!cleanEndpoint,
+    apiKey: !!cleanApiKey,
+    apiVersion: !!cleanApiVersion,
+    deployment: !!cleanDeployment,
+    rawEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
+    cleanEndpoint: cleanEndpoint,
+    rawApiVersion: process.env.AZURE_OPENAI_API_VERSION,
+    cleanApiVersion: cleanApiVersion,
+    rawDeployment: process.env.AZURE_OPENAI_DEPLOYMENT,
+    cleanDeployment: cleanDeployment
   };
   
   console.log("Environment check:", config);
