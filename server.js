@@ -15,43 +15,46 @@ const app = express();
 connectDB();
 
 // Security and CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://nextping.blog',
+  'https://www.nextping.blog',
+  'https://api1.nextping.blog',
+  'https://nextping.vercel.app', // Add your Vercel domain if using Vercel
+];
+
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'https://nextping.blog',
-      'https://www.nextping.blog',
-      'https://api1.nextping.blog',
-      'https://nextping.vercel.app', // Add your Vercel domain if using Vercel
-    ];
-    
+
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       console.warn(`CORS blocked origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
+      callback(null, false); // Return false instead of throwing error to avoid CORS header absence
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
+    'Content-Type',
+    'Authorization',
     'X-Requested-With',
     'Accept',
     'Origin'
   ],
   exposedHeaders: ['Set-Cookie'],
-  maxAge: 86400, // 24 hours
+  maxAge: 86400,
   optionsSuccessStatus: 200
 };
 
-// Apply CORS
+// Apply CORS for all routes
 app.use(cors(corsOptions));
+
+// Ensure preflight requests are handled
+app.options('*', cors(corsOptions));
 
 // Trust proxy for accurate IP addresses (important for deployment)
 app.set('trust proxy', 1);
@@ -92,15 +95,15 @@ app.use('/api/automation', require('./routes/automation'));
 // Test endpoints for debugging
 app.get('/api/test-cookie', (req, res) => {
   const isProduction = process.env.NODE_ENV === 'production';
-  
+
   res.cookie('test-cookie', 'cookie-value', {
     httpOnly: true,
-    secure: isProduction, // Use secure cookies in production
+    secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 24 * 60 * 60 * 1000
   });
-  
-  res.json({ 
+
+  res.json({
     message: 'Cookie set for testing',
     secure: isProduction,
     environment: process.env.NODE_ENV
@@ -119,7 +122,7 @@ app.get('/api/env-check', (req, res) => {
       deployment: process.env.AZURE_OPENAI_DEPLOYMENT
     },
     cors: {
-      allowedOrigins: corsOptions.origin.toString()
+      allowedOrigins
     }
   });
 });
@@ -129,16 +132,16 @@ app.get('/api/test-cors', (req, res) => {
   console.log('Origin:', req.headers.origin);
   console.log('Cookies:', req.cookies);
   console.log('Headers:', req.headers);
-  
+
   const isProduction = process.env.NODE_ENV === 'production';
-  
+
   res.cookie('test-cookie', 'cookie-value', {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000
   });
-  
+
   res.json({
     message: 'CORS test successful',
     origin: req.headers.origin || 'No origin header',
@@ -196,9 +199,8 @@ app.use((err, req, res, next) => {
     timestamp: new Date().toISOString()
   });
 
-  // Don't leak error details in production
   const isDevelopment = process.env.NODE_ENV !== 'production';
-  
+
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Internal Server Error',
@@ -209,7 +211,6 @@ app.use((err, req, res, next) => {
 // Graceful shutdown handling
 const gracefulShutdown = (signal) => {
   console.log(`Received ${signal}. Starting graceful shutdown...`);
-  
   process.exit(0);
 };
 
@@ -219,7 +220,6 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled Promise Rejection:', err);
-  // Don't exit in production, just log
   if (process.env.NODE_ENV !== 'production') {
     process.exit(1);
   }
@@ -233,7 +233,7 @@ process.on('uncaughtException', (err) => {
 
 // Start server
 const PORT = process.env.PORT || 8000;
-const HOST = process.env.HOST || '0.0.0.0'; // Listen on all interfaces
+const HOST = process.env.HOST || '0.0.0.0';
 
 const server = app.listen(PORT, HOST, () => {
   console.log(`🚀 Server running on ${HOST}:${PORT}`);
@@ -241,7 +241,6 @@ const server = app.listen(PORT, HOST, () => {
   console.log(`🌐 Health check: http://${HOST}:${PORT}/health`);
 });
 
-// Handle server errors
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`Port ${PORT} is already in use`);
