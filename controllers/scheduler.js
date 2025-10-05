@@ -1,5 +1,6 @@
 
 const { bloggen } = require("../lib/bloggen");
+const { generateImage } = require("../lib/blogimg");
 const Blog = require("../models/Blog");
 const Title = require("../models/Title")
 
@@ -17,6 +18,8 @@ exports.scheduler = async (req,res)=>{
         console.log("title name is ",title[0].name)
         const bloggenn=await bloggen(title[0].name)
         console.log("bloggenn is ",bloggenn)
+        const url=await generateImage(title[0].name)
+        console.log("url is ",url)
         const blog=await Blog.create({
             title:title[0].name,
             content:bloggenn.content,
@@ -24,6 +27,7 @@ exports.scheduler = async (req,res)=>{
             category:"AI",
             tags:bloggenn.tags,
             author:"67f4fb962c153e478dcdb98a",
+            coverImage:url,
             seo:{
                 metaTitle:bloggenn.metaTitle,
                 metaDescription:bloggenn.metaDescription,

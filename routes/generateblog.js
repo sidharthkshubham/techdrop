@@ -1,9 +1,10 @@
 const express = require('express');
-const { generateBlog } = require('../controllers/bloggenerator');
+const { generateBlog, generateblogimg } = require('../controllers/bloggenerator');
 const { protect } = require('../middleware/auth');
 const router = express.Router();
 
 router.post('/', generateBlog);
+router.post('/img', generateblogimg);
 
 // Enhanced environment check
 router.get('/getenv', (req, res) => {
